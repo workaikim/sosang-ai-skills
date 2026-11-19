@@ -51,7 +51,7 @@
 <header>
   <span class="eyebrow">소상공인 AX 실습자료</span>
   <h1>소상공인을 위한 AI 스킬 모음</h1>
-  <p class="lead">오픈소스 스킬 모음 <b>k-skill</b>에서 소상공인 업무에 쓸 만한 스킬만 골랐습니다. 카드를 누르면 안내 페이지(GitHub)가 열리고, <b>설치 명령 복사</b>를 누르면 설치 명령이 복사됩니다.</p>
+  <p class="lead">오픈소스 스킬 모음 <b>k-skill</b>에서 소상공인 업무에 쓸 만한 스킬만 골랐습니다. 카드의 <b>안내 보기</b>를 누르면 원본 안내 페이지(GitHub)가 열리고, <b>설치 명령 복사</b>를 누르면 설치 명령이 복사됩니다.</p>
 </header>
 
 <div class="controls" id="chips">
@@ -65,6 +65,8 @@
     <h2>사용 전 꼭 확인하세요</h2>
     <ul>
       <li>이 스킬들은 <b>Claude Code·Codex</b> 같은 코딩 에이전트에서 쓰는 방식입니다. 일반 Claude 채팅 화면에서는 바로 작동하지 않을 수 있습니다.</li>
+      <li>스킬을 실행할 때마다 실제 안내문을 npm 패키지(<code>@nomadamas/k-skill</code>)에서 받아오므로 <b>Node.js 18 이상</b>이 설치돼 있어야 합니다.</li>
+      <li>공공데이터 조회 스킬 상당수는 제작자가 운영하는 중계 서버(<code>k-skill-proxy.nomadamas.org</code>)를 거칩니다. 사업자등록번호 등 조회 내용이 이 서버를 지나가므로 민감한 정보는 넣지 마세요. 서버 상태에 따라 조회가 안 될 수 있습니다.</li>
       <li>전체 설치: <code>npx --yes skills add NomaDamas/k-skill --all -g</code> → 설치 후 <code>k-skill-setup</code> 스킬로 공통 설정을 진행합니다.</li>
       <li>개인이 공개한 오픈소스이므로, 업무용 PC에 설치하기 전 소속 기관의 보안 검토를 받으세요. 일부 스킬은 외부 API 키가 필요합니다.</li>
       <li>장부·세무 결과물은 참고용 초안이며 세무신고나 회계감사를 대체하지 않습니다.</li>
@@ -85,7 +87,7 @@ const CATS = {
   law:   {label:'법률·문서',        color:'var(--c5)'},
 };
 const SKILLS = [
-  {id:'korean-jangbu-for', cat:'tax', name:'사업자 장부 자동 정리', desc:'카드·영수증 등을 장부 CSV와 경영 리포트로 정리합니다.', warn:'참고용 초안입니다. 세무신고를 대체하지 않습니다.'},
+  {id:'korean-jangbu-for', cat:'tax', name:'사업자 장부 자동 정리', desc:'카드·영수증 등을 장부 CSV와 경영 리포트로 정리합니다.', warn:'참고용 초안이며 세무신고를 대체하지 않습니다. 원본 요구사항: macOS·Linux, Python 3.11 이상.'},
   {id:'popbill', cat:'tax', name:'세금계산서·현금영수증', desc:'팝빌 API로 세금계산서·현금영수증·문자 업무를 처리합니다.', warn:'팝빌 API 키가 필요합니다.'},
   {id:'nts-business-registration', cat:'tax', name:'사업자등록 상태 조회', desc:'사업자등록번호 상태 조회와 진위 확인.'},
   {id:'biz-health-check', cat:'tax', name:'거래처 사업자 점검', desc:'사업자 상태·연금·체납·제재 정보를 교차 조회한 리포트.'},
@@ -94,16 +96,16 @@ const SKILLS = [
   {id:'localdata-business-status', cat:'area', name:'사업장 영업·폐업 조회', desc:'인허가 기준으로 사업장 영업·폐업 상태를 조회합니다.'},
   {id:'building-register-search', cat:'area', name:'건축물대장 조회', desc:'점포 건물의 건축물대장 표제부 정보 조회.'},
   {id:'real-estate-search', cat:'area', name:'실거래가·전월세 조회', desc:'아파트·오피스텔 등 실거래가와 전월세 조회.'},
-  {id:'iros-registry-automation', cat:'area', name:'등기부 열람 보조', desc:'인터넷등기소 등기부 열람 흐름을 보조합니다. 임대차 계약 전 확인용.'},
+  {id:'iros-registry-automation', cat:'area', name:'등기부 열람 보조', desc:'인터넷등기소 등기부 발급·열람 흐름을 보조합니다. 임대차 계약 전 확인용.', warn:'로그인·결제·인증서는 본인이 직접 처리합니다.'},
   {id:'kstartup-search', cat:'gov', name:'K-Startup 공고 검색', desc:'창업진흥원 K-Startup 공고와 통계 조회.'},
   {id:'government-support-survey', cat:'gov', name:'정부지원사업 통합 검토', desc:'여러 정부 지원사업 공고를 한 번에 검토합니다.'},
   {id:'s2b-notice-search', cat:'gov', name:'학교장터 공고 조회', desc:'S2B 학교장터 공고·견적요청 조회.'},
   {id:'g2b-order-plan-search', cat:'gov', name:'나라장터 발주계획', desc:'나라장터 발주계획 조회.'},
-  {id:'naver-ad-performance', cat:'sales', name:'네이버 검색광고 성과', desc:'네이버 검색광고 성과와 키워드 지표 조회(읽기 전용).'},
+  {id:'naver-ad-performance', cat:'sales', name:'네이버 검색광고 성과', desc:'네이버 검색광고 노출·클릭·광고비·전환 성과와 키워드 지표 조회(읽기 전용).', warn:'네이버 검색광고 API 키가 필요합니다.'},
   {id:'danawa-price-search', cat:'sales', name:'다나와 가격 비교', desc:'다나와 기준 쇼핑몰별 실구매가 비교.'},
-  {id:'coupang-product-search', cat:'sales', name:'쿠팡 상품 검색', desc:'쿠팡 상품 검색, 비교, 특가 조회.'},
+  {id:'coupang-product-search', cat:'sales', name:'쿠팡 상품 검색', desc:'쿠팡 상품 검색과 로켓배송·가격 비교.', warn:'쿠팡 파트너스 API를 쓰므로 안내되는 상품 링크에 제휴 수수료가 발생할 수 있습니다.'},
   {id:'kamis-food-price', cat:'sales', name:'식재료 시세 조회', desc:'농수축산물 도매·소매 가격과 기간별 비교. 원가 관리용.'},
-  {id:'mfds-food-safety', cat:'sales', name:'식품 회수·부적합 조회', desc:'부적합 식품과 식품 회수 정보 조회.'},
+  {id:'mfds-food-safety', cat:'sales', name:'식품 회수·부적합 조회', desc:'식품안전나라의 회수·판매중지·부적합 식품 정보 조회.'},
   {id:'daangn-jobs-search', cat:'sales', name:'당근알바 공고 검색', desc:'당근알바 공고 검색과 상세 조회.'},
   {id:'korean-law-search', cat:'law', name:'법령·판례 검색', desc:'법령·조문·판례·유권해석 검색.'},
   {id:'court-payment-order-assistant', cat:'law', name:'지급명령 신청 도우미', desc:'미수금 지급명령 신청 정보 정리와 체크리스트 작성.'},
